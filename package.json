@@ -1,5 +1,6 @@
 {
-  "name": "countries-app",
+  "homepage": "https://jmosesessel.github.io/countries-api-app",
+  "name": "countries-api-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
