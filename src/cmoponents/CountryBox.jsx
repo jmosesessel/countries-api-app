@@ -3,7 +3,7 @@ import GermanyFlag from '../assets/images/germany-flag.png'
 function CountryBox() {
   return (
     <>
-        <div className='flex flex-col bg-white-dark-mode-text-light-mode-elements shadow-sm rounded-t-md mx-10'> 
+        <div className='flex flex-col bg-white-dark-mode-text-light-mode-elements shadow-sm rounded-t-md'> 
             <img className=' rounded-t-md' src={GermanyFlag} alt="" />
             <div className='flex flex-col p-8'>
                 <h3 className='font-semibold text-lg'>Germany</h3>
@@ -12,6 +12,7 @@ function CountryBox() {
                 <p>Capital: <span className=' text-dark-gray-light-mode-input'>Berlin</span></p>
             </div>
         </div>   
+
     </>
   )
 }
