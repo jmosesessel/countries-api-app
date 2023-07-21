@@ -3,8 +3,25 @@ import FilterArea from "../components/FilterArea";
 import CountryList from "../components/CountryList";
 function Homepage() {
 	const [apiData, setApiData] = useState([]);
+	const [searchQuery, setSearchQuery] = useState("");
+	const [filterQuery, setFilterQuery] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [isError, setIsError] = useState(false);
+
+	const handleSearch = (data) => {
+		setSearchQuery(data);
+		console.log("search query = ", data);
+	};
+
+	const handleFilter = (data) => {
+    setFilterQuery(data)
+    console.log('homepage handle filter = ', data)
+  };
+
+  // const handleFilteredQuery =(data) => {
+  //   setFilterQuery(data)
+  //   console.log('home page filtered text', data)
+  // }
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -26,12 +43,20 @@ function Homepage() {
 	}, []);
 
 	return (
-    <>
-      <FilterArea />
+		<>
+			<FilterArea
+				handleSearch={handleSearch}
+				
+        handleFilteredQuery={handleFilter}
+			/>
 			{isLoading && "Loading..."}
 			{!isLoading && (
 				<>
-					<CountryList countryList={apiData} />
+					<CountryList
+						countryList={apiData}
+						searchQuery={searchQuery}
+            filterQuery={filterQuery}
+					/>
 				</>
 			)}
 		</>

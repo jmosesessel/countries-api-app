@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { LiaArrowLeftSolid } from "react-icons/lia";
 import { Link, useLocation } from "react-router-dom";
-import GermanyFlag from "../assets/images/germany-flag.png";
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
@@ -46,20 +45,20 @@ function CountryDetails() {
 			{isLoading && "Loading..."}
 			{!isLoading && (
 				<>
-					<Link to="/">
-                    <div className="mx-7 lg:mx-20 my-5 lg:my-20">
-						<button className="w-[6.5rem] lg:w-[8.5rem] shadow-md h-8 lg:h-10 flex justify-center mb-16 lg:mb-20 text-sm lg:text-base items-center gap-2 bg-white-dark-mode-text-light-mode-elements">
-							<LiaArrowLeftSolid />
-							<span> Back </span>
-						</button>
-                        </div>
-					</Link>
+					<div className="mx-7 lg:mx-20 my-5 lg:my-20">
+						<Link className=" inline-block" to="/">
+							<button className="w-[6.5rem] lg:w-[8.5rem] shadow-md h-8 lg:h-10 flex justify-center text-sm lg:text-base items-center gap-2 bg-white-dark-mode-text-light-mode-elements">
+								<LiaArrowLeftSolid />
+								<span> Back </span>
+							</button>
+						</Link>
+					</div>
 					<div className="mx-7 lg:mx-20">
 						<div className="flex flex-col lg:flex-row lg:gap-[7.5rem] text-sm mb-[2.2rem]">
 							<div>
 								<img
-									className="w-full rounded-lg lg:w-[34.98219rem]"
-									src={apiData != "" && apiData.flags.png}
+									className="w-full rounded-lg lg:w-[34.98219rem] h-[17.24525rem] lg:h-[25.19806rem]"
+									src={apiData != "" && apiData.flags.svg}
 									alt="flag"
 								/>
 							</div>
