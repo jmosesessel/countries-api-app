@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { LiaArrowLeftSolid } from "react-icons/lia";
 import { Link, useLocation } from "react-router-dom";
+import Spinner from "../components/Spinner";
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
@@ -30,7 +31,7 @@ function CountryDetails() {
 				setCurrencies(Object.values(data[0].currencies)[0].name);
 				setIsLoading(false);
 				setIsError(false);
-				const curr = data[0].currencies;
+
 				console.log("dataRes", data[0]);
 			})
 			.catch((err) => {
@@ -42,23 +43,28 @@ function CountryDetails() {
 
 	return (
 		<>
-			{isLoading && "Loading..."}
-			{!isLoading && (
+			
+			{
+				isLoading && !isError &&
+					<Spinner isLoading={isLoading} />
+				
+			}
+			<div className="mx-7 lg:mx-20 my-5 lg:my-20">
+				<Link className=" inline-block" to="/">
+					<button className="w-[6.5rem] lg:w-[8.5rem] shadow-md h-8 lg:h-10 flex justify-center text-sm lg:text-base items-center gap-2 bg-white-dark-mode-text-light-mode-elements">
+						<LiaArrowLeftSolid />
+						<span> Back </span>
+					</button>
+				</Link>
+			</div>
+			{!isLoading && !isError && (
 				<>
-					<div className="mx-7 lg:mx-20 my-5 lg:my-20">
-						<Link className=" inline-block" to="/">
-							<button className="w-[6.5rem] lg:w-[8.5rem] shadow-md h-8 lg:h-10 flex justify-center text-sm lg:text-base items-center gap-2 bg-white-dark-mode-text-light-mode-elements">
-								<LiaArrowLeftSolid />
-								<span> Back </span>
-							</button>
-						</Link>
-					</div>
 					<div className="mx-7 lg:mx-20">
 						<div className="flex flex-col lg:flex-row lg:gap-[7.5rem] text-sm mb-[2.2rem]">
 							<div>
 								<img
 									className="w-full rounded-lg lg:w-[34.98219rem] h-[17.24525rem] lg:h-[25.19806rem]"
-									src={apiData != "" && apiData.flags.svg}
+									src={apiData != "" ? apiData.flags.png : ""}
 									alt="flag"
 								/>
 							</div>

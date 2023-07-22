@@ -41,12 +41,12 @@ export default function Filter({ handleFilter }) {
 					</option>
 				</select>
 				{showDropDown && (
-					<ul className="z-1 absolute bg-white-dark-mode-text-light-mode-elements left-4 lg:left-0 mt-1 w-[12.5rem] px-5 py-5 rounded-md">
+					<ul className="z-10 absolute bg-white-dark-mode-text-light-mode-elements left-4 lg:left-0 mt-1 w-[12.5rem] py-2 rounded-md shadow-sm">
 						<>
 							{options.map((option) => (
 								<li
 									onClick={handleSelected}
-									className=" hover:bg-dark-gray-light-mode-input py-2"
+									className=" hover:bg-very-light-gray-light-mode-bg py-2 px-5 cursor-pointer"
 									key={option.value}
 									data-value={option.value}
 								>

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import FilterArea from "../components/FilterArea";
 import CountryList from "../components/CountryList";
+import Spinner from "../components/Spinner";
+
 function Homepage() {
 	const [apiData, setApiData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -14,14 +16,14 @@ function Homepage() {
 	};
 
 	const handleFilter = (data) => {
-    setFilterQuery(data)
-    console.log('homepage handle filter = ', data)
-  };
+		setFilterQuery(data);
+		console.log("homepage handle filter = ", data);
+	};
 
-  // const handleFilteredQuery =(data) => {
-  //   setFilterQuery(data)
-  //   console.log('home page filtered text', data)
-  // }
+	// const handleFilteredQuery =(data) => {
+	//   setFilterQuery(data)
+	//   console.log('home page filtered text', data)
+	// }
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -46,16 +48,15 @@ function Homepage() {
 		<>
 			<FilterArea
 				handleSearch={handleSearch}
-				
-        handleFilteredQuery={handleFilter}
+				handleFilteredQuery={handleFilter}
 			/>
-			{isLoading && "Loading..."}
+			{isLoading && <Spinner isLoading />}
 			{!isLoading && (
 				<>
 					<CountryList
 						countryList={apiData}
 						searchQuery={searchQuery}
-            filterQuery={filterQuery}
+						filterQuery={filterQuery}
 					/>
 				</>
 			)}
