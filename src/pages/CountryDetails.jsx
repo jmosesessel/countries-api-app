@@ -222,7 +222,7 @@ function CountryDetails() {
 											Border Countries:
 										</h2>
 										<div className="flex flex-wrap gap-[0.62rem] ">
-											{apiData != "" &&
+											{
 												borderCountries.length > 0 &&
 												borderCountries.map(
 													(countryName, index) => (
