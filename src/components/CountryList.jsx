@@ -1,6 +1,6 @@
 import CountryBox from "./CountryBox";
 
-function CountryList({ countryList, searchQuery, filterQuery }) {
+function CountryList({ countryList, searchQuery, filterQuery, isDarkMode }) {
 	console.log("countryList", countryList);
 	console.log("countryList search query = ", searchQuery);
 	console.log("countryList filter query = ", filterQuery);
@@ -26,6 +26,7 @@ function CountryList({ countryList, searchQuery, filterQuery }) {
 					// )
 					.map((countryData) => (
 						<CountryBox
+							isDarkMode={isDarkMode}
 							countryDetail={countryData}
 							key={countryData.cca3}
 						/>

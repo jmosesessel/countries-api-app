@@ -3,7 +3,7 @@ import FilterArea from "../components/FilterArea";
 import CountryList from "../components/CountryList";
 import Spinner from "../components/Spinner";
 
-function Homepage() {
+function Homepage({isDarkMode}) {
 	const [apiData, setApiData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [filterQuery, setFilterQuery] = useState("");
@@ -47,6 +47,7 @@ function Homepage() {
 	return (
 		<>
 			<FilterArea
+			isDarkMode={isDarkMode}
 				handleSearch={handleSearch}
 				handleFilteredQuery={handleFilter}
 			/>
@@ -54,6 +55,7 @@ function Homepage() {
 			{!isLoading && (
 				<>
 					<CountryList
+						isDarkMode={isDarkMode}
 						countryList={apiData}
 						searchQuery={searchQuery}
 						filterQuery={filterQuery}

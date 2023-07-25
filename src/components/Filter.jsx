@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 // import { Dropdown } from "flowbite-react";
 
-export default function Filter({ handleFilter }) {
+export default function Filter({ handleFilter, isDarkMode }) {
 	const [selected, setSelected] = useState("Filter by Region");
 	let [showDropDown, setShowDropDown] = useState(false);
 
@@ -34,19 +34,19 @@ export default function Filter({ handleFilter }) {
 				<select
 					onClick={handleSelectClick}
 					id="select"
-					className="block bg-white border-none w-[12.5rem] mx-4 lg:mx-0 h-12 px-4 form-control shadow-sm rounded-md"
+					className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : "bg-white-dark-mode-text-light-mode-elements"} bg-white block  border-none w-[12.5rem] mx-4 lg:mx-0 h-12 px-4 form-control shadow-sm rounded-md`}
 				>
 					<option hidden value={selected}>
 						{selected}
 					</option>
 				</select>
 				{showDropDown && (
-					<ul className="z-10 absolute bg-white-dark-mode-text-light-mode-elements left-4 lg:left-0 mt-1 w-[12.5rem] py-2 rounded-md shadow-sm">
+					<ul className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : "bg-white-dark-mode-text-light-mode-elements"} bg-white-dark-mode-text-light-mode-elements z-10 absolute  left-4 lg:left-0 mt-1 w-[12.5rem] py-2 rounded-md shadow-sm`}>
 						<>
 							{options.map((option) => (
 								<li
 									onClick={handleSelected}
-									className=" hover:bg-very-light-gray-light-mode-bg py-2 px-5 cursor-pointer"
+									className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements hover:bg-dark-gray-light-mode-input " : "bg-white-dark-mode-text-light-mode-elements hover:bg-very-light-gray-light-mode-bg"}  py-2 px-5 cursor-pointer`}
 									key={option.value}
 									data-value={option.value}
 								>

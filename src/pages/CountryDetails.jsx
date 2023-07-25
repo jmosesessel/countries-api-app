@@ -12,7 +12,7 @@ function useQuery() {
 
 	return React.useMemo(() => new URLSearchParams(search), [search]);
 }
-function CountryDetails() {
+function CountryDetails({isDarkMode}) {
 	let query = useQuery();
 	const baseURL = `https://restcountries.com/v3.1/`;
 	const name = query.get("name").toLowerCase();
@@ -102,7 +102,7 @@ function CountryDetails() {
 				{isLoading && !isError && <Spinner isLoading={isLoading} />}
 				<div className="mx-7 lg:mx-20 my-5 lg:my-20">
 					<Link className=" inline-block" to="/">
-						<button className="w-[6.5rem] lg:w-[8.5rem] shadow-md h-8 lg:h-10 flex justify-center text-sm lg:text-base items-center gap-2 bg-white-dark-mode-text-light-mode-elements rounded-md">
+						<button className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : " bg-white-dark-mode-text-light-mode-elements"} w-[6.5rem] lg:w-[8.5rem] shadow-md h-8 lg:h-10 flex justify-center text-sm lg:text-base items-center gap-2 rounded-md`}>
 							<LiaArrowLeftSolid />
 							<span> Back </span>
 						</button>
@@ -235,7 +235,7 @@ function CountryDetails() {
 																		.value
 																)
 															}
-															className="flex justify-center items-center h-7 text-[0.75rem] px-[1.69rem] bg-white-dark-mode-text-light-mode-elements shadow-md rounded-sm"
+															className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : "bg-white-dark-mode-text-light-mode-elements"} flex justify-center items-center h-7 text-[0.75rem] px-[1.69rem]  shadow-md rounded-sm`}
 														>
 															{countryName}
 														</button>
