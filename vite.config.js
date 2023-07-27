@@ -7,7 +7,7 @@ export default defineConfig(({ command }) => {
 	console.log("vite config comman", command);
 	const config = {
 		plugins: [react(), tailwindcss("./tailwind.config.js")],
-		base: "/",
+		base: "/countries-api-app/",
 	};
 
 	// if (command !== "serve") {

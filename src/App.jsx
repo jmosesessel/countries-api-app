@@ -46,12 +46,12 @@ function App({ setMode }) {
 
 				<Routes>
 					<Route
-						path="/"
+						path="/countries-api-app/"
 						element={<Homepage isDarkMode={isDarkMode} />}
 					/>
 
 					<Route
-						path="/country-details"
+						path="/countries-api-app/country-details"
 						element={<CountryDetails isDarkMode={isDarkMode} />}
 					/>
 				</Routes>
