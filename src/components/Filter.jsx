@@ -34,14 +34,14 @@ export default function Filter({ handleFilter, isDarkMode }) {
 				<select
 					onClick={handleSelectClick}
 					id="select"
-					className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : "bg-white-dark-mode-text-light-mode-elements"} bg-white block  border-none w-[12.5rem] mx-4 lg:mx-0 h-12 px-4 form-control shadow-sm rounded-md`}
+					className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : "bg-white-dark-mode-text-light-mode-elements"}  block  border-none w-[12.5rem] mx-4 lg:mx-0 h-12 px-4 form-control shadow-sm rounded-md focus:outline-none focus:border-none focus-visible:ring-0`}
 				>
 					<option hidden value={selected}>
 						{selected}
 					</option>
 				</select>
 				{showDropDown && (
-					<ul className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : "bg-white-dark-mode-text-light-mode-elements"} bg-white-dark-mode-text-light-mode-elements z-10 absolute  left-4 lg:left-0 mt-1 w-[12.5rem] py-2 rounded-md shadow-sm`}>
+					<ul className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : "bg-white-dark-mode-text-light-mode-elements"} z-10 absolute  left-4 lg:left-0 mt-1 w-[12.5rem] py-2 rounded-md shadow-sm`}>
 						<>
 							{options.map((option) => (
 								<li

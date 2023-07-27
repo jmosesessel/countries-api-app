@@ -1,6 +1,6 @@
 import "./App.css";
 import Header from "./components/Header";
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Homepage from "./pages/Homepage";
 import CountryDetails from "./pages/CountryDetails";
 import { React, useState, useEffect } from "react";
@@ -10,21 +10,19 @@ function App({ setMode }) {
 
 	const cLocalStorage = () => {
 		//get localStorage mode and set it to
-		let localMode = localStorage.getItem("cIsDarkMode")
+		let localMode = localStorage.getItem("cIsDarkMode");
 
 		if (localMode == "null") {
 			localStorage.setItem("cIsDarkMode", isDarkMode);
-			console.log("localMode is null ...", localMode);
+			// console.log("localMode is null ...", localMode);
 			setIsDarkMode(isDarkMode);
-		} 
-		
-		if (localMode != "null"){
+		}
 
+		if (localMode != "null") {
 			if (localMode == "true") setIsDarkMode(true);
 
 			if (localMode == "false") setIsDarkMode(false);
 		}
-		
 	};
 
 	const handleTheme = (setMode) => {
@@ -45,9 +43,9 @@ function App({ setMode }) {
 				} w-full h-screen flex flex-col font-Nunito text-sm`}
 			>
 				<Header isDarkMode={isDarkMode} setMode={handleTheme} />
+
 				<Routes>
 					<Route
-						exact
 						path="/"
 						element={<Homepage isDarkMode={isDarkMode} />}
 					/>
