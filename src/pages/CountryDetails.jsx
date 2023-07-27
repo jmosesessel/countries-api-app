@@ -27,7 +27,7 @@ function CountryDetails({isDarkMode}) {
 	// handle border button click. set the url query to the new name that was clicked
 	const handleBorderClick = (data) => {
 		// setIsLoading(true);
-		navigate(`/country-details?name=${data}`);
+		navigate(`/countries-api-app/country-details?name=${data}`);
 		const refresh = () => window.location.reload(true);
 
 		//console.log("clicked border", data);
@@ -101,7 +101,7 @@ function CountryDetails({isDarkMode}) {
 			<div className="text-[16px]">
 				{isLoading && !isError && <Spinner isLoading={isLoading} />}
 				<div className="mx-7 lg:mx-20 my-5 lg:my-20">
-					<Link className=" inline-block" to="/">
+					<Link className=" inline-block" to="/countries-api-app/">
 						<button className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : " bg-white-dark-mode-text-light-mode-elements"} w-[6.5rem] lg:w-[8.5rem] shadow-md h-8 lg:h-10 flex justify-center text-sm lg:text-base items-center gap-2 rounded-md`}>
 							<LiaArrowLeftSolid />
 							<span> Back </span>

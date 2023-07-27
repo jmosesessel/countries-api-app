@@ -40,7 +40,7 @@ function App({ setMode }) {
 					isDarkMode
 						? " bg-very-dark-blue-dark-mode-bg text-white-dark-mode-text-light-mode-elements"
 						: "bg-very-light-gray-light-mode-bg"
-				} w-full h-screen flex flex-col font-Nunito text-sm`}
+				} w-full h-full min-h-screen flex flex-col font-Nunito text-sm`}
 			>
 				<Header isDarkMode={isDarkMode} setMode={handleTheme} />
 
