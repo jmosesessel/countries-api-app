@@ -12,18 +12,13 @@ function Homepage({isDarkMode}) {
 
 	const handleSearch = (data) => {
 		setSearchQuery(data);
-		//console.log("search query = ", data);
 	};
 
 	const handleFilter = (data) => {
 		setFilterQuery(data);
-		//console.log("homepage handle filter = ", data);
 	};
 
-	// const handleFilteredQuery =(data) => {
-	//   setFilterQuery(data)
-	//   console.log('home page filtered text', data)
-	// }
+	
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -35,7 +30,6 @@ function Homepage({isDarkMode}) {
 				setApiData(data);
 				setIsLoading(false);
 				setIsError(false);
-				//console.log("dataRes", data);
 			})
 			.catch((err) => {
 				console.log("error", err);

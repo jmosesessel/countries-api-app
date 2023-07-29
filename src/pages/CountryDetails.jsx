@@ -7,11 +7,11 @@ import Spinner from "../components/Spinner";
 
 function CountryDetails({ isDarkMode }) {
 	let params = useParams();
-	console.log("first params", params);
+	// console.log("first params", params);
 	const baseURL = `https://restcountries.com/v3.1/`;
 	let name = params.name.toLowerCase();
 
-	console.log("query name", name);
+	// console.log("query name", name);
 
 	const [apiData, setApiData] = useState([]);
 	const [selectedCountry, setSelectedCountry] = useState("");
@@ -21,12 +21,6 @@ function CountryDetails({ isDarkMode }) {
 	const [isError, setIsError] = useState(false);
 	const navigate = useNavigate();
 
-	
-	//setSelectedCountry(name)
-	// const setInitialCountry = (name)=>{
-	// 	setSelectedCountry(name)
-	// }
-	
 
 	// handle border button click. set the url query to the new name that was clicked
 	const handleBorderClick = (data) => {
@@ -45,7 +39,6 @@ function CountryDetails({ isDarkMode }) {
 		setIsError(false);
 		setBorderCountries([]);
 
-		// console.log('selectedCountry in fetch', selectedCountry)
 
 		fetch(`${baseURL}all`)
 			.then((response) => response.json())
@@ -88,7 +81,6 @@ function CountryDetails({ isDarkMode }) {
 	};
 
 	useEffect(() => {
-		// console.log('selected country in effect', name)
 		setSelectedCountry(name);
 		fetchAllCountries(name);
 	}, []);

@@ -1,9 +1,6 @@
 import CountryBox from "./CountryBox";
 
 function CountryList({ countryList, searchQuery, filterQuery, isDarkMode }) {
-	console.log("countryList", countryList);
-	console.log("countryList search query = ", searchQuery);
-	console.log("countryList filter query = ", filterQuery);
 
 	return (
 		<>
@@ -12,18 +9,23 @@ function CountryList({ countryList, searchQuery, filterQuery, isDarkMode }) {
 					.filter((item) => {
 						return searchQuery == ""
 							? item
-							: item.name.common.toLocaleLowerCase().includes(searchQuery.toString().toLocaleLowerCase())
+							: item.name.common
+									.toLocaleLowerCase()
+									.includes(
+										searchQuery
+											.toString()
+											.toLocaleLowerCase()
+									);
 					})
-          .filter((item)=>{
-            return filterQuery == "" || filterQuery == "All"
-            ? item
-            : item.region.toLocaleLowerCase() == filterQuery.toString().toLocaleLowerCase()   
-          })
-					// .filter(
-					// 	(item) =>
-					// 		Object.values(countryList.name.common).toLocaleLowerCase() ==
-					// 		searchQuery.toLocaleLowerCase()
-					// )
+					.filter((item) => {
+						return filterQuery == "" || filterQuery == "All"
+							? item
+							: item.region.toLocaleLowerCase() ==
+									filterQuery.toString().toLocaleLowerCase();
+					})
+					.sort((a,b)=>{
+						return (a.name.common < b.name.common) ? -1 : 0
+					})
 					.map((countryData) => (
 						<CountryBox
 							isDarkMode={isDarkMode}

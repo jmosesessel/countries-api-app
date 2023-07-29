@@ -2,7 +2,6 @@ import React from "react";
 import { CirclesWithBar } from "react-loader-spinner";
 
 function Spinner({isLoading}) {
-    console.log('in spinner', isLoading)
 	return (
 		<div className="w-full absolute bg-black opacity-50 h-screen flex justify-center items-center">
 			<CirclesWithBar
