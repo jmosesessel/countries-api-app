@@ -1,58 +1,63 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { LiaArrowLeftSolid } from "react-icons/lia";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
 // import BorderCountries from "../components/BorderCounties";
 
-// A custom hook that builds on useLocation to parse
-// the query string for you.
-function useQuery() {
-	const { search } = useLocation();
-
-	return React.useMemo(() => new URLSearchParams(search), [search]);
-}
-function CountryDetails({isDarkMode}) {
-	let query = useQuery();
+function CountryDetails({ isDarkMode }) {
+	let params = useParams();
+	console.log("first params", params);
 	const baseURL = `https://restcountries.com/v3.1/`;
-	const name = query.get("name").toLowerCase();
+	let name = params.name.toLowerCase();
+
 	console.log("query name", name);
+
 	const [apiData, setApiData] = useState([]);
+	const [selectedCountry, setSelectedCountry] = useState("");
 	const [borderCountries, setBorderCountries] = useState([]);
 	const [currencies, setCurrencies] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [isError, setIsError] = useState(false);
 	const navigate = useNavigate();
 
+	
+	//setSelectedCountry(name)
+	// const setInitialCountry = (name)=>{
+	// 	setSelectedCountry(name)
+	// }
+	
+
 	// handle border button click. set the url query to the new name that was clicked
 	const handleBorderClick = (data) => {
-		// setIsLoading(true);
-		navigate(`/countries-api-app/country-details?name=${data}`);
-		const refresh = () => window.location.reload(true);
+		navigate(`/countries-api-app/country-details/${data}`);
 
-		//console.log("clicked border", data);
-		refresh();
-		// // query.set( "name", data)
-		// fetchCountry(countryURL, data);
+		setSelectedCountry(data);
+
+		fetchAllCountries(data);
+
 	};
 
-	const fetchAllCountries = () => {
+	
+
+	const fetchAllCountries = (selectedCountry) => {
 		setIsLoading(true);
 		setIsError(false);
 		setBorderCountries([]);
 
+		// console.log('selectedCountry in fetch', selectedCountry)
+
 		fetch(`${baseURL}all`)
 			.then((response) => response.json())
 			.then((data) => {
-				//console.log("all countries", data);
-				//setApiData(data);
+
 				setIsLoading(false);
 				setIsError(false);
 
 				const seletedCountryDetail = data.filter((country) => {
 					return (
 						country.name.common.toLocaleLowerCase() ==
-						name.toLocaleLowerCase()
+						selectedCountry.toLocaleLowerCase()
 					);
 				});
 
@@ -61,27 +66,18 @@ function CountryDetails({isDarkMode}) {
 				);
 
 				setApiData(seletedCountryDetail[0]);
-				//console.log("seletedCountryDetail", seletedCountryDetail);
 
 				const borders = seletedCountryDetail[0].borders;
 
-				//console.log("borders", borders);
-
 				// get the border countries by name
 				if (borders != undefined) {
-					// const borderCountriesByNames = borders.map(border=>{
 					const borderCountriesByNames = data.reduce((a, c) => {
 						seletedCountryDetail[0].borders.includes(c.cca3) &&
 							a.push(c.name.common);
 						return a;
 					}, []);
 
-					// console.log(
-					// 	"borderCountriesByNames",
-					// 	borderCountriesByNames
-					// );
 					setBorderCountries(borderCountriesByNames);
-					// })
 				}
 			})
 			.catch((err) => {
@@ -92,8 +88,9 @@ function CountryDetails({isDarkMode}) {
 	};
 
 	useEffect(() => {
-		fetchAllCountries();
-		//fetchCountry(countryURL, name);
+		// console.log('selected country in effect', name)
+		setSelectedCountry(name);
+		fetchAllCountries(name);
 	}, []);
 
 	return (
@@ -102,7 +99,13 @@ function CountryDetails({isDarkMode}) {
 				{isLoading && !isError && <Spinner isLoading={isLoading} />}
 				<div className="mx-7 lg:mx-20 my-5 lg:my-20">
 					<Link className=" inline-block" to="/countries-api-app/">
-						<button className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : " bg-white-dark-mode-text-light-mode-elements"} w-[6.5rem] lg:w-[8.5rem] shadow-md h-8 lg:h-10 flex justify-center text-sm lg:text-base items-center gap-2 rounded-md`}>
+						<button
+							className={`${
+								isDarkMode
+									? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements"
+									: " bg-white-dark-mode-text-light-mode-elements"
+							} w-[6.5rem] lg:w-[8.5rem] shadow-md h-8 lg:h-10 flex justify-center text-sm lg:text-base items-center gap-2 rounded-md`}
+						>
 							<LiaArrowLeftSolid />
 							<span> Back </span>
 						</button>
@@ -222,8 +225,7 @@ function CountryDetails({isDarkMode}) {
 											Border Countries:
 										</h2>
 										<div className="flex flex-wrap gap-[0.62rem] ">
-											{
-												borderCountries.length > 0 &&
+											{borderCountries.length > 0 &&
 												borderCountries.map(
 													(countryName, index) => (
 														<button
@@ -235,7 +237,11 @@ function CountryDetails({isDarkMode}) {
 																		.value
 																)
 															}
-															className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : "bg-white-dark-mode-text-light-mode-elements"} flex justify-center items-center h-7 text-[0.75rem] px-[1.69rem]  shadow-md rounded-sm`}
+															className={`${
+																isDarkMode
+																	? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements"
+																	: "bg-white-dark-mode-text-light-mode-elements"
+															} flex justify-center items-center h-7 text-[0.75rem] px-[1.69rem]  shadow-md rounded-sm`}
 														>
 															{countryName}
 														</button>

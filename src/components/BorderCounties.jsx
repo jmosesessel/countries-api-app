@@ -33,7 +33,7 @@ function BorderCounties({ borderList, borderClick }) {
 	return (
 		<>
 			{borderCountries.map((border, index) => (
-				<Link key={index} to={"/country-details?name=" + border}>
+				<Link key={index} to={"/country-details/" + border}>
 				<button
 					value={border}
 					onClick={(e) => borderClick(e.target.value)}

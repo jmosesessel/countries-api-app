@@ -51,7 +51,7 @@ function App({ setMode }) {
 					/>
 
 					<Route
-						path="/countries-api-app/country-details"
+						path="/countries-api-app/country-details/:name"
 						element={<CountryDetails isDarkMode={isDarkMode} />}
 					/>
 				</Routes>

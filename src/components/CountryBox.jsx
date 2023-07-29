@@ -5,7 +5,7 @@ function CountryBox({countryDetail, isDarkMode}) {
 	return (
 		<>
 			{
-				<Link to={"country-details?name="+country.name.common}>
+				<Link to={`country-details/${country.name.common}`}>
 					<div className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : " bg-white-dark-mode-text-light-mode-elements"} flex flex-col lg:h-[21rem] shadow-sm rounded-t-md rounded-b-md`}>
 						<img
 							className="w-full h-[10rem] rounded-t-md shadow-sm"

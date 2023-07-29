@@ -14,7 +14,7 @@ function Header({isDarkMode, setMode}) {
 				</h1>
 				<div onClick={()=> handleClick(isDarkMode)}  className="text-dark-blue-dark-mode-elements flex items-center gap-2  cursor-pointer">
 					<HiOutlineMoon className={`${isDarkMode && " fill-white-dark-mode-text-light-mode-elements text-white" } text-base `}/>
-					<h6 className={`${isDarkMode && " text-white" } text-[0.75rem] lg:text-base`}>Dark Mode</h6>
+					<h6 className={`${isDarkMode && " text-white-dark-mode-text-light-mode-elements" } text-[0.75rem] lg:text-base`}>Dark Mode</h6>
 				</div>
 			</div>
 		</>
