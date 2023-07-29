@@ -18,7 +18,7 @@ export default function Filter({ handleFilter, isDarkMode }) {
 		e.preventDefault();
 		//setSelected(value)
 		setSelected(e.currentTarget.dataset.value);
-		console.log(e.currentTarget.dataset.value);
+		//console.log(e.currentTarget.dataset.value);
 		setShowDropDown(!showDropDown);
 		handleFilter(e.currentTarget.dataset.value);
 	};
@@ -31,10 +31,10 @@ export default function Filter({ handleFilter, isDarkMode }) {
 	return (
 		<>
 			<div className="relative">
-				<select
+				<select 
 					onClick={handleSelectClick}
-					id="select"
-					className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : "bg-white-dark-mode-text-light-mode-elements"}  block  border-none w-[12.5rem] mx-4 lg:mx-0 h-12 px-4 form-control shadow-sm rounded-md focus:outline-none focus:border-none focus-visible:ring-0`}
+					id="selectCountry"
+					className={`${isDarkMode ? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements" : "bg-white-dark-mode-text-light-mode-elements "} block w-[12.5rem] mx-4 lg:mx-0 h-12 px-4 form-control shadow-sm rounded-md focus:outline-none focus:border-none focus-visible:ring-0`}
 				>
 					<option hidden value={selected}>
 						{selected}

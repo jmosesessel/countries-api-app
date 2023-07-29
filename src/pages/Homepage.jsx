@@ -12,12 +12,12 @@ function Homepage({isDarkMode}) {
 
 	const handleSearch = (data) => {
 		setSearchQuery(data);
-		console.log("search query = ", data);
+		//console.log("search query = ", data);
 	};
 
 	const handleFilter = (data) => {
 		setFilterQuery(data);
-		console.log("homepage handle filter = ", data);
+		//console.log("homepage handle filter = ", data);
 	};
 
 	// const handleFilteredQuery =(data) => {
