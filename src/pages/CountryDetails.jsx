@@ -1,7 +1,7 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import PropTypes from "prop-types";
 import { LiaArrowLeftSolid } from "react-icons/lia";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
 // import BorderCountries from "../components/BorderCounties";
 
@@ -14,76 +14,82 @@ function CountryDetails({ isDarkMode }) {
 	// console.log("query name", name);
 
 	const [apiData, setApiData] = useState([]);
-	const [selectedCountry, setSelectedCountry] = useState("");
+	// removed unused selectedCountry state
 	const [borderCountries, setBorderCountries] = useState([]);
 	const [currencies, setCurrencies] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [isError, setIsError] = useState(false);
 	const navigate = useNavigate();
 
-
 	// handle border button click. set the url query to the new name that was clicked
 	const handleBorderClick = (data) => {
 		navigate(`/countries-api-app/country-details/${data}`);
 
-		setSelectedCountry(data);
-
 		fetchAllCountries(data);
-
 	};
 
-	
+	const fetchAllCountries = useCallback(
+		(selectedCountry) => {
+			setIsLoading(true);
+			setIsError(false);
+			setBorderCountries([]);
 
-	const fetchAllCountries = (selectedCountry) => {
-		setIsLoading(true);
-		setIsError(false);
-		setBorderCountries([]);
+			fetch(
+				`${baseURL}all?fields=name,flags,population,region,subregion,capital,tld,currencies,languages,borders,cca3`
+			)
+				.then((response) => response.json())
+				.then((data) => {
+					// In case API returns an error object instead of array
+					if (!Array.isArray(data)) {
+						console.error("REST Countries error:", data);
+						setIsLoading(false);
+						setIsError(true);
+						return;
+					}
+					setIsLoading(false);
+					setIsError(false);
 
+					const seletedCountryDetail = data.filter((country) => {
+						return (
+							country.name.common.toLocaleLowerCase() ==
+							selectedCountry.toLocaleLowerCase()
+						);
+					});
 
-		fetch(`${baseURL}all`)
-			.then((response) => response.json())
-			.then((data) => {
-
-				setIsLoading(false);
-				setIsError(false);
-
-				const seletedCountryDetail = data.filter((country) => {
-					return (
-						country.name.common.toLocaleLowerCase() ==
-						selectedCountry.toLocaleLowerCase()
+					setCurrencies(
+						seletedCountryDetail[0].currencies
+							? Object.values(seletedCountryDetail[0].currencies)[0].name
+							: ""
 					);
+
+					setApiData(seletedCountryDetail[0]);
+
+					const borders = seletedCountryDetail[0].borders;
+
+					// get the border countries by name
+					if (borders != undefined) {
+						const borderCountriesByNames = data.reduce((a, c) => {
+							seletedCountryDetail[0].borders.includes(c.cca3) &&
+								c?.name?.common &&
+								a.push(c.name.common);
+							return a;
+						}, []);
+
+						setBorderCountries(borderCountriesByNames);
+					}
+				})
+				.catch((err) => {
+					console.log("error", err);
+					setIsLoading(false);
+					setIsError(true);
 				});
-
-				setCurrencies(
-					Object.values(seletedCountryDetail[0].currencies)[0].name
-				);
-
-				setApiData(seletedCountryDetail[0]);
-
-				const borders = seletedCountryDetail[0].borders;
-
-				// get the border countries by name
-				if (borders != undefined) {
-					const borderCountriesByNames = data.reduce((a, c) => {
-						seletedCountryDetail[0].borders.includes(c.cca3) &&
-							a.push(c.name.common);
-						return a;
-					}, []);
-
-					setBorderCountries(borderCountriesByNames);
-				}
-			})
-			.catch((err) => {
-				console.log("error", err);
-				setIsLoading(false);
-				setIsError(true);
-			});
-	};
+		},
+		[baseURL]
+	);
 
 	useEffect(() => {
-		setSelectedCountry(name);
 		fetchAllCountries(name);
-	}, []);
+	}, [name, fetchAllCountries]);
 
 	return (
 		<>
@@ -110,11 +116,7 @@ function CountryDetails({ isDarkMode }) {
 								<div className="lg:w-[34.98219rem]">
 									<img
 										className="w-full rounded-lg lg:w-[34.98219rem] h-[17.24525rem] lg:h-[25.0625rem] shadow-lg"
-										src={
-											apiData != ""
-												? apiData.flags.png
-												: ""
-										}
+										src={apiData != "" ? apiData.flags.png : ""}
 										alt="flag"
 									/>
 								</div>
@@ -127,118 +129,70 @@ function CountryDetails({ isDarkMode }) {
 									<div className="flex flex-col lg:flex-row gap-8 lg:gap-[8.81rem] mb-[2.12rem] lg:mb-[4.37rem] ">
 										<div className="flex flex-col gap-3">
 											<div>
-												<span className="font-bold">
-													Native Name:
-												</span>{" "}
+												<span className="font-bold">Native Name:</span>{" "}
 												<span>
 													{apiData.name != null &&
-														apiData.name
-															.nativeName !=
-															undefined &&
-														Object.values(
-															apiData.name
-																.nativeName
-														)[0].official}
+														apiData.name.nativeName != undefined &&
+														Object.values(apiData.name.nativeName)[0].official}
 												</span>
 											</div>
 											<div>
-												<span className="font-bold">
-													Population:
-												</span>{" "}
+												<span className="font-bold">Population:</span>{" "}
 												<span>
-													{apiData != "" &&
-														apiData.population.toLocaleString()}
+													{apiData != "" && apiData.population.toLocaleString()}
 												</span>
 											</div>
 											<div>
-												<span className="font-bold">
-													Region:
-												</span>{" "}
-												<span>
-													{apiData != "" &&
-														apiData.region}
-												</span>
+												<span className="font-bold">Region:</span>{" "}
+												<span>{apiData != "" && apiData.region}</span>
 											</div>
 											<div>
-												<span className="font-bold">
-													Sub Region:
-												</span>{" "}
-												<span>
-													{apiData != "" &&
-														apiData.subregion}
-												</span>
+												<span className="font-bold">Sub Region:</span>{" "}
+												<span>{apiData != "" && apiData.subregion}</span>
 											</div>
 											<div>
-												<span className="font-bold">
-													Capital:
-												</span>{" "}
-												<span>
-													{apiData != "" &&
-														apiData.capital}
-												</span>
+												<span className="font-bold">Capital:</span>{" "}
+												<span>{apiData != "" && apiData.capital}</span>
 											</div>
 										</div>
 
 										<div className="flex flex-col gap-3">
 											<div>
-												<span className="font-bold">
-													Top Level Domain:
-												</span>{" "}
-												<span>
-													{apiData != "" &&
-														apiData.tld}
-												</span>
+												<span className="font-bold">Top Level Domain:</span>{" "}
+												<span>{apiData != "" && apiData.tld}</span>
 											</div>
 											<div>
-												<span className="font-bold">
-													Currencies:
-												</span>{" "}
-												<span>
-													{currencies != "" &&
-														currencies}
-												</span>
+												<span className="font-bold">Currencies:</span>{" "}
+												<span>{currencies != "" && currencies}</span>
 											</div>
 											<div className=" flex">
-												<span className="font-bold">
-													Languages:
-												</span>{" "}
+												<span className="font-bold">Languages:</span>{" "}
 												<span className="flex flex-wrap">
 													{apiData != "" &&
-														Object.values(
-															apiData.languages
-														).join(", ")}
+														Object.values(apiData.languages).join(", ")}
 												</span>
 											</div>
 										</div>
 									</div>
 
 									<div className="flex flex-col lg:flex-row gap-4 mb-20">
-										<h2 className="text-base font-[600] ">
-											Border Countries:
-										</h2>
+										<h2 className="text-base font-[600] ">Border Countries:</h2>
 										<div className="flex flex-wrap gap-[0.62rem] ">
 											{borderCountries.length > 0 &&
-												borderCountries.map(
-													(countryName, index) => (
-														<button
-															key={index}
-															value={countryName}
-															onClick={(e) =>
-																handleBorderClick(
-																	e.target
-																		.value
-																)
-															}
-															className={`${
-																isDarkMode
-																	? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements"
-																	: "bg-white-dark-mode-text-light-mode-elements"
-															} flex justify-center items-center h-7 text-[0.75rem] px-[1.69rem]  shadow-md rounded-sm`}
-														>
-															{countryName}
-														</button>
-													)
-												)}
+												borderCountries.map((countryName, index) => (
+													<button
+														key={index}
+														value={countryName}
+														onClick={(e) => handleBorderClick(e.target.value)}
+														className={`${
+															isDarkMode
+																? " bg-dark-blue-dark-mode-elements text-white-dark-mode-text-light-mode-elements"
+																: "bg-white-dark-mode-text-light-mode-elements"
+														} flex justify-center items-center h-7 text-[0.75rem] px-[1.69rem]  shadow-md rounded-sm`}
+													>
+														{countryName}
+													</button>
+												))}
 										</div>
 									</div>
 								</div>
@@ -252,3 +206,7 @@ function CountryDetails({ isDarkMode }) {
 }
 
 export default CountryDetails;
+
+CountryDetails.propTypes = {
+	isDarkMode: PropTypes.bool,
+};
