@@ -20,24 +20,39 @@ function Homepage({ isDarkMode }) {
 	};
 
 	useEffect(() => {
-		setIsLoading(true);
+		const CACHE_KEY = "countries_v1";
+		const FIELDS = "name,flags,population,region,capital,cca3";
+
+		const cached = sessionStorage.getItem(CACHE_KEY);
+		if (cached) {
+			try {
+				const parsed = JSON.parse(cached);
+				if (Array.isArray(parsed)) {
+					setApiData(parsed);
+					setIsLoading(false);
+				}
+			} catch (e) {
+				console.warn("Failed to parse cached countries", e);
+			}
+		} else {
+			setIsLoading(true);
+		}
+
 		setIsError(false);
 
-		// Request only the fields we use to comply with API requirements and reduce payload
-		fetch(
-			"https://restcountries.com/v3.1/all?fields=name,flags,population,region,capital,cca3"
-		)
+		// Background refresh (or initial load)
+		fetch(`https://restcountries.com/v3.1/all?fields=${FIELDS}`)
 			.then((response) => response.json())
 			.then((data) => {
-				// In case API returns an error object instead of an array
 				if (!Array.isArray(data)) {
 					console.error("REST Countries error:", data);
+					if (!cached) setIsLoading(false);
 					setIsError(true);
-					setApiData([]);
-					setIsLoading(false);
+					if (!cached) setApiData([]);
 					return;
 				}
 				setApiData(data);
+				sessionStorage.setItem(CACHE_KEY, JSON.stringify(data));
 				setIsLoading(false);
 				setIsError(false);
 			})

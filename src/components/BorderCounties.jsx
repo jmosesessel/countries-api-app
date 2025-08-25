@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function BorderCounties({ borderList, borderClick }) {
-	const borderURL = `https://restcountries.com/v3.1/alpha/`;
+	// const borderURL = `https://restcountries.com/v3.1/alpha/`;
 	const [borderCountries, setBorderCountries] = useState([]);
 
 	useEffect(() => {
@@ -10,27 +10,6 @@ function BorderCounties({ borderList, borderClick }) {
 		setBorderCountries(borderList);
 	}, [borderList]);
 
-	// const fetchBorderCountries = async (borders) => {
-	// 	console.log("borders", borders);
-	// 	let newBorders = await [...borderCountries];
-	// 	if (borders != undefined) {
-	// 		borders.forEach(async (border) => {
-	// 			const borderRes = await fetch(`${borderURL}${border}`);
-	// 			const borderResData = await borderRes.json();
-
-	// 			newBorders.push(await borderResData[0].name.common);
-	// 			// setTimeout(() => {
-	// 			setBorderCountries(await newBorders);
-	// 			// }, 100);
-	// 			// console.log("border countries", borderCountries);
-	// 			// console.log("borderCountries....", borderCountries);
-	// 		});
-	// 	}
-	// };
-
-	// useEffect(() => {
-	// 	//fetchBorderCountries(borderList);
-	// }, []);
 	return (
 		<>
 			{borderCountries.map((border, index) => (

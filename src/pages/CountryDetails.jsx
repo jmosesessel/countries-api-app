@@ -23,66 +23,89 @@ function CountryDetails({ isDarkMode }) {
 
 	// handle border button click. set the url query to the new name that was clicked
 	const handleBorderClick = (data) => {
-		navigate(`/countries-api-app/country-details/${data}`);
-
+		const param = encodeURIComponent(data);
+		navigate(`/countries-api-app/country-details/${param}`);
 		fetchAllCountries(data);
 	};
 
 	const fetchAllCountries = useCallback(
-		(selectedCountry) => {
-			setIsLoading(true);
-			setIsError(false);
-			setBorderCountries([]);
+		async (selectedCountry) => {
+			try {
+				setIsLoading(true);
+				setIsError(false);
+				setBorderCountries([]);
 
-			fetch(
-				`${baseURL}all?fields=name,flags,population,region,subregion,capital,tld,currencies,languages,borders,cca3`
-			)
-				.then((response) => response.json())
-				.then((data) => {
-					// In case API returns an error object instead of array
-					if (!Array.isArray(data)) {
-						console.error("REST Countries error:", data);
-						setIsLoading(false);
-						setIsError(true);
-						return;
-					}
-					setIsLoading(false);
-					setIsError(false);
+				const raw = (selectedCountry || "").toString().trim();
+				const decoded = decodeURIComponent(raw);
+				const isAlpha3 = /^[A-Za-z]{3}$/.test(raw);
+				const fields =
+					"name,flags,population,region,subregion,capital,tld,currencies,languages,borders,cca3";
 
-					const seletedCountryDetail = data.filter((country) => {
-						return (
-							country.name.common.toLocaleLowerCase() ==
-							selectedCountry.toLocaleLowerCase()
-						);
-					});
-
-					setCurrencies(
-						seletedCountryDetail[0].currencies
-							? Object.values(seletedCountryDetail[0].currencies)[0].name
-							: ""
+				let res;
+				if (isAlpha3) {
+					res = await fetch(
+						`${baseURL}alpha/${encodeURIComponent(
+							raw.toUpperCase()
+						)}?fields=${fields}`
 					);
-
-					setApiData(seletedCountryDetail[0]);
-
-					const borders = seletedCountryDetail[0].borders;
-
-					// get the border countries by name
-					if (borders != undefined) {
-						const borderCountriesByNames = data.reduce((a, c) => {
-							seletedCountryDetail[0].borders.includes(c.cca3) &&
-								c?.name?.common &&
-								a.push(c.name.common);
-							return a;
-						}, []);
-
-						setBorderCountries(borderCountriesByNames);
+				} else {
+					// Try full name first
+					res = await fetch(
+						`${baseURL}name/${encodeURIComponent(
+							decoded
+						)}?fullText=true&fields=${fields}`
+					);
+					if (!res.ok) {
+						// Fallback to partial match
+						res = await fetch(
+							`${baseURL}name/${encodeURIComponent(decoded)}?fields=${fields}`
+						);
 					}
-				})
-				.catch((err) => {
-					console.log("error", err);
-					setIsLoading(false);
+				}
+
+				if (!res.ok) {
+					console.error("Country fetch failed", res.status);
 					setIsError(true);
-				});
+					setIsLoading(false);
+					return;
+				}
+
+				const payload = await res.json();
+				const selected = Array.isArray(payload) ? payload[0] : payload;
+				if (!selected) {
+					setIsError(true);
+					setIsLoading(false);
+					return;
+				}
+
+				setCurrencies(
+					selected?.currencies
+						? Object.values(selected.currencies)[0]?.name || ""
+						: ""
+				);
+				setApiData(selected);
+
+				const borders = selected?.borders || [];
+				if (Array.isArray(borders) && borders.length > 0) {
+					const codes = borders.map((c) => encodeURIComponent(c)).join(",");
+					const bRes = await fetch(
+						`${baseURL}alpha?codes=${codes}&fields=name,cca3`
+					);
+					if (bRes.ok) {
+						const bData = await bRes.json();
+						const names = (Array.isArray(bData) ? bData : [])
+							.map((c) => c?.name?.common)
+							.filter(Boolean);
+						setBorderCountries(names);
+					}
+				}
+
+				setIsLoading(false);
+			} catch (err) {
+				console.error("Error loading country details:", err);
+				setIsLoading(false);
+				setIsError(true);
+			}
 		},
 		[baseURL]
 	);
@@ -109,6 +132,11 @@ function CountryDetails({ isDarkMode }) {
 						</button>
 					</Link>
 				</div>
+				{!isLoading && isError && (
+					<div className="mx-7 lg:mx-20 text-red-600">
+						Could not load country details. Please check the URL or go back.
+					</div>
+				)}
 				{!isLoading && !isError && (
 					<>
 						<div className="mx-7 lg:mx-20">
@@ -116,14 +144,22 @@ function CountryDetails({ isDarkMode }) {
 								<div className="lg:w-[34.98219rem]">
 									<img
 										className="w-full rounded-lg lg:w-[34.98219rem] h-[17.24525rem] lg:h-[25.0625rem] shadow-lg"
-										src={apiData != "" ? apiData.flags.png : ""}
-										alt="flag"
+										src={
+											apiData ? apiData?.flags?.svg || apiData?.flags?.png : ""
+										}
+										alt={
+											apiData?.name?.common
+												? `${apiData.name.common} flag`
+												: "flag"
+										}
+										loading="lazy"
+										decoding="async"
 									/>
 								</div>
 
 								<div className="flex flex-col lg:w-[37.375rem]">
 									<h1 className="mt-10 text-[1.375rem] font-semibold mb-4">
-										{apiData != "" && apiData.name.common}
+										{apiData?.name?.common}
 									</h1>
 
 									<div className="flex flex-col lg:flex-row gap-8 lg:gap-[8.81rem] mb-[2.12rem] lg:mb-[4.37rem] ">
@@ -131,35 +167,32 @@ function CountryDetails({ isDarkMode }) {
 											<div>
 												<span className="font-bold">Native Name:</span>{" "}
 												<span>
-													{apiData.name != null &&
-														apiData.name.nativeName != undefined &&
-														Object.values(apiData.name.nativeName)[0].official}
+													{apiData?.name?.nativeName &&
+														Object.values(apiData.name.nativeName)[0]?.official}
 												</span>
 											</div>
 											<div>
 												<span className="font-bold">Population:</span>{" "}
-												<span>
-													{apiData != "" && apiData.population.toLocaleString()}
-												</span>
+												<span>{apiData?.population?.toLocaleString?.()}</span>
 											</div>
 											<div>
 												<span className="font-bold">Region:</span>{" "}
-												<span>{apiData != "" && apiData.region}</span>
+												<span>{apiData?.region}</span>
 											</div>
 											<div>
 												<span className="font-bold">Sub Region:</span>{" "}
-												<span>{apiData != "" && apiData.subregion}</span>
+												<span>{apiData?.subregion}</span>
 											</div>
 											<div>
 												<span className="font-bold">Capital:</span>{" "}
-												<span>{apiData != "" && apiData.capital}</span>
+												<span>{apiData?.capital}</span>
 											</div>
 										</div>
 
 										<div className="flex flex-col gap-3">
 											<div>
 												<span className="font-bold">Top Level Domain:</span>{" "}
-												<span>{apiData != "" && apiData.tld}</span>
+												<span>{apiData?.tld}</span>
 											</div>
 											<div>
 												<span className="font-bold">Currencies:</span>{" "}
@@ -168,7 +201,7 @@ function CountryDetails({ isDarkMode }) {
 											<div className=" flex">
 												<span className="font-bold">Languages:</span>{" "}
 												<span className="flex flex-wrap">
-													{apiData != "" &&
+													{apiData?.languages &&
 														Object.values(apiData.languages).join(", ")}
 												</span>
 											</div>
